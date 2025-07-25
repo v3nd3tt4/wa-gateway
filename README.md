@@ -1,6 +1,14 @@
 # WhatsApp Gateway Open Source
 
+![Dashboard](./gambar/1.png)
+
 WhatsApp Gateway adalah aplikasi open source berbasis Node.js (Express, Sequelize, Baileys) dan React yang memungkinkan Anda mengirim, menerima, dan mengelola pesan WhatsApp secara otomatis melalui API dan antarmuka web.
+
+## Tampilan Lainnya
+
+| Kirim Pesan | DataTable Pesan | Auto Reply | Manajemen Kontak | QR Code Login |
+|---|---|---|---|---|
+| ![Kirim Pesan](./gambar/2.png) | ![Pesan Terkirim](./gambar/3.png) | ![Auto Reply](./gambar/4.png) | ![Kontak](./gambar/5.png) | ![QR Code](./gambar/1.png) |
 
 ## Fitur Utama
 - **Login Admin dengan JWT**: Keamanan akses API dan dashboard.
