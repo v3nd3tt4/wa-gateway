@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Sequelize } = require('sequelize');
+const { Sequelize, Op } = require('sequelize');
 const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 const { DataTypes } = require('sequelize');
@@ -282,6 +282,66 @@ app.delete('/received-messages/:id', async (req, res) => {
     res.json({ status: 'success' });
   } catch (err) {
     res.status(400).json({ status: 'error', message: err.message });
+  }
+});
+
+// Endpoint statistik summary dan tren harian
+app.get('/stats', async (req, res) => {
+  try {
+    const [sentCount, receivedCount, contactCount, autoReplyCount] = await Promise.all([
+      SentMessage.count(),
+      ReceivedMessage.count(),
+      Contact.count(),
+      AutoReply.count(),
+    ]);
+
+    // Statistik 5 hari terakhir (trending)
+    const today = new Date();
+    const days = [];
+    for (let i = 4; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      days.push(d);
+    }
+    const formatDate = d => d.toISOString().slice(0, 10);
+    const sentPerDay = {};
+    const receivedPerDay = {};
+    for (const d of days) {
+      sentPerDay[formatDate(d)] = 0;
+      receivedPerDay[formatDate(d)] = 0;
+    }
+    // Ambil pesan terkirim 5 hari terakhir
+    const sentMsgs = await SentMessage.findAll({
+      where: { timestamp: { [Op.gte]: new Date(today.getTime() - 4*24*60*60*1000) } },
+      attributes: ['timestamp'],
+    });
+    sentMsgs.forEach(msg => {
+      const t = formatDate(msg.timestamp);
+      if (sentPerDay[t] !== undefined) sentPerDay[t]++;
+    });
+    // Ambil pesan masuk 5 hari terakhir
+    const receivedMsgs = await ReceivedMessage.findAll({
+      where: { timestamp: { [Op.gte]: new Date(today.getTime() - 4*24*60*60*1000) } },
+      attributes: ['timestamp'],
+    });
+    receivedMsgs.forEach(msg => {
+      const t = formatDate(msg.timestamp);
+      if (receivedPerDay[t] !== undefined) receivedPerDay[t]++;
+    });
+
+    res.json({
+      sent: sentCount,
+      received: receivedCount,
+      contacts: contactCount,
+      autoReplies: autoReplyCount,
+      trend: days.map(d => ({
+        date: formatDate(d),
+        sent: sentPerDay[formatDate(d)],
+        received: receivedPerDay[formatDate(d)],
+      })),
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Gagal mengambil statistik', error: err.message });
   }
 });
 
