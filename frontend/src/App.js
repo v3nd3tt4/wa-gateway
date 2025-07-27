@@ -646,7 +646,7 @@ function Sidebar({ onLogout, loadingLogout, open, onClose }) {
     { to: "/sent", label: "Pesan Terkirim" },
     { to: "/inbox", label: "Pesan Masuk" },
     
-    { to: "/chatbot", label: "Chatbot" },
+    // { to: "/chatbot", label: "Chatbot" },
     { to: "/autoreply", label: "Auto Reply" },
   ];
   return (

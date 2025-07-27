@@ -111,7 +111,7 @@ async function startWhatsApp() {
         if (text) {
             await ReceivedMessage.create({ from, message: text });
             // Chatbot auto-reply
-            if (chatbotActive) {
+            // if (chatbotActive) {
                 // Cari auto reply dari database
                 const auto = await AutoReply.findOne({ where: { keyword: text.toLowerCase() } });
                 let reply = null;
@@ -120,7 +120,7 @@ async function startWhatsApp() {
                     await sock.sendMessage(from, { text: reply });
                     await SentMessage.create({ to: from, message: reply }); // Simpan auto-reply ke database
                 }
-            }
+            // }
         }
     });
     // Pada endpoint /send-message:
