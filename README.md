@@ -24,6 +24,11 @@ WhatsApp Gateway adalah aplikasi open source berbasis Node.js (Express, Sequeliz
 - **CRUD Pesan Masuk/Terkirim**: Edit & hapus pesan dari dashboard.
 - **Integrasi API**: Tes kirim pesan via Postman, PHP, dsb.
 
+## Tested on
+1. Node Js v22.17.1
+2. Npm 10.9.2
+3. MariaDB 10.4.27
+
 ## Instalasi
 
 ### 1. Clone Repository
